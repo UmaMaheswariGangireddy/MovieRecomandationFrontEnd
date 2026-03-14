@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movie Recommendation App</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+/* HEADER */
+::-webkit-scrollbar{
+    display: none;
+}
+.header{
+height:10vh;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 80px;
+background:#111;
+color:white;
+position:sticky;
+top:0;
+z-index:10;
+}
+
+.logo{
+font-size:26px;
+font-weight:bold;
+color:#ff3d3d;
+letter-spacing:1px;
+}
+
+.navlinks a{
+text-decoration:none;
+color:white;
+margin:0 15px;
+font-size:18px;
+transition:0.3s;
+}
+
+.navlinks a:hover{
+color:#ff3d3d;
+}
+
+/* HERO SECTION */
+
+.firstPage{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:90vh;
+color:white;
+text-align:center;
+
+background-image:
+linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.8)),
+url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba");
+
+background-size:cover;
+background-position:center;
+}
+
+.firstPage h1{
+font-size:60px;
+width:60%;
+margin-bottom:40px;
+}
+
+/* SEARCH BOX */
+
+form{
+display:flex;
+gap:10px;
+}
+
+.searchTerm{
+height:65px;
+width:450px;
+padding:0 25px;
+font-size:20px;
+border:none;
+border-radius:50px;
+outline:none;
+}
+
+form button{
+padding:0 35px;
+border:none;
+border-radius:50px;
+background:#ff3d3d;
+color:white;
+font-size:20px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+form button:hover{
+background:#d60000;
+transform:scale(1.05);
+}
+
+/* MOVIE CONTAINER */
+
+.movieContainer{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:30px;
+padding:60px;
+background:#f3f3f3;
+}
+
+/* MOVIE CARD */
+
+.card{
+width:260px;
+height:350px;
+background:white;
+border-radius:15px;
+overflow:hidden;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+transition:0.3s;
+display:flex;
+flex-direction:column;
+}
+
+.card:hover{
+transform:translateY(-10px) scale(1.03);
+box-shadow:0 15px 30px rgba(0,0,0,0.25);
+}
+
+.card img{
+height:70%;
+width:100%;
+object-fit:cover;
+}
+
+.card h2{
+font-size:20px;
+padding:10px;
+text-align:center;
+}
+
+.card p{
+text-align:center;
+color:#666;
+font-size:14px;
+padding:0 10px 10px;
+}
+
+@media(max-width:768px){
+
+.firstPage h1{
+font-size:40px;
+width:90%;
+}
+
+.searchTerm{
+width:260px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="header">
+<div class="logo">MovieAPP</div>
+
+<nav class="navlinks">
+<a href="./index.html">Home</a>
+<a href="./about.html">About</a>
+<a href="./services.html">Services</a>
+</nav>
+</header>
+
+<section class="firstPage">
+<h1>Search For Your Favourite Movies</h1>
+
+<form>
+<input type="text" class="searchTerm" placeholder="Search movies...">
+<button>Search</button>
+</form>
+</section>
+
+<script>
+
+let form = document.querySelector('form')
+let searchTerm = document.querySelector('.searchTerm')
+
+form.addEventListener('submit', async(e)=>{
+e.preventDefault()
+
+let url = `https://api.tvmaze.com/search/shows?q=${searchTerm.value}`
+
+let res = await fetch(url)
+let data = await res.json()
+
+createCards(data)
+
+searchTerm.value=''
+})
+
+let container = document.createElement('section')
+container.classList.add('movieContainer')
+
+function createCards(movies){
+
+container.innerHTML=''
+
+movies.forEach((el)=>{
+
+if(el?.show?.image?.medium){
+
+let card = document.createElement('div')
+card.classList.add('card')
+
+let img = document.createElement('img')
+img.src = el.show.image.medium
+
+let title = document.createElement('h2')
+title.innerText = el.show.name.slice(0,20)
+
+let gen = document.createElement('p')
+gen.innerHTML = el.show.genres.join(' ')
+
+card.appendChild(img)
+card.appendChild(title)
+card.appendChild(gen)
+
+container.appendChild(card)
+
+}
+
+})
+
+}
+
+document.body.appendChild(container)
+
+</script>
+
+</body>
+</html>
